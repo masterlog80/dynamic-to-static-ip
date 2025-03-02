@@ -89,6 +89,7 @@ current_netmask=$(ip addr show $active_interface | awk '/inet / {print $2}' | cu
 current_gateway=$(ip route show default | awk '/default/ {print $3}')
 current_dns=$(resolvectl status | grep "DNS Servers" | awk '{for (i=3; i<=NF; i++) if ($i ~ /^[0-9.]+$/) print $i}' | tr ' ' '\n')
 current_hostname=$(hostname)
+current_domain=$(hostname -d)
 
 # Check if DHCP is enabled for IPv4 from Netplan configuration
 dhcp4=$(grep -q "dhcp4: true" /etc/netplan/*.yaml && echo "yes" || echo "no")
@@ -122,6 +123,9 @@ echo -e "${BGREEN}$current_gateway${ENDCOLOR}"
 echo ""
 echo -e "${WHITE}Current DNS-Servers:${ENDCOLOR}"
 echo -e "${BGREEN}$current_dns${ENDCOLOR}"
+echo ""
+echo -e "${WHITE}Current Search Domain:${ENDCOLOR}"
+echo -e "${BGREEN}$current_domain${ENDCOLOR}"
 echo ""
 echo "-----------------------------------------------------------------------"
 echo -e "${BYELLOW}if you press Enter with 'no input' it will default to the current${ENDCOLOR}"
@@ -173,6 +177,11 @@ read -p "Set Hostname (default: $current_hostname): " hostname
 hostname=${hostname:-$current_hostname}
 echo ""
 
+# Prompt the user search domain
+read -p "Set Search Domain (default: $current_domain): " domain
+domain=${search:-$current_domain}
+echo ""
+
 # Find the netplan configuration file
 netplan_file=$(ls /etc/netplan/ | grep -E '^[0-9]{2}-.*\.yaml$')
 
@@ -199,7 +208,7 @@ network:
           via: $gateway
       nameservers:
         addresses: [$dns_servers]
-        search: [$hostname.local]
+        search: [$domain]
 EOF
 echo ""
 echo "-----------------------------------------------------------------------"

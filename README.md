@@ -1,50 +1,65 @@
-## Dynamic to Static IP Configuration Script for Ubuntu Server 24.04
+# Dynamic to Static IP – Ubuntu Server 24.04
 
-### Overview
-This Bash script is designed to simplify the process of changing a dynamic IP address to a static IP address on Ubuntu Server 24.04.  
-It provides a comprehensive step-by-step walkthrough, making it user-friendly for individuals with limited technical expertise but need their Ubuntu server up and running with a static IP configuration.
-#
-### Features
-- **Welcome Message**: Provides an initial greeting and a brief overview of the script’s functionality.
-- **User Authentication**: Displays the current user executing the script and prompts for confirmation to proceed.
-- **Network Interface Detection**: Identifies an active network interface (ensure only one connection/ethernet cable is plugged in).
-- **Current Network Settings**: Retrieves and displays the current IP address, netmask, gateway, and checks the status of DHCP4 and DHCP6.
-- **User Input Prompts**: Prompts the user to enter a new static IP, netmask, gateway, DNS servers, and hostname.
-- **Netplan Configuration Management**: Locates the existing netplan configuration file, creates a backup, and generates a new configuration file based on user input.
-- **Apply Configuration**: Prompts the user to apply the new netplan configuration. If the user chooses not to apply, the script reverts to the original configuration and terminates.
-#
-###
-<img width="587" alt="Scherm­afbeelding 2024-08-20 om 21 09 26" src="https://github.com/user-attachments/assets/3f495c6f-d10e-42d1-97f5-ca62f4685bd2">
+A Bash script that simplifies converting a dynamic IP address to a static IP configuration on Ubuntu Server 24.04. It walks you through every step interactively and is designed to be accessible to users with limited networking experience.
 
+---
 
-### Usage
-1. **Run the Script**: Execute the script as root on your Ubuntu Server 24.04.
-2. **Follow the Prompts**: The script will guide you through each step, from detecting the current network settings to applying the new static IP configuration.
-3. **Confirmation**: Confirm the changes to apply the new configuration or revert to the original settings if needed.
+## Features
+
+- **Welcome & overview** – Greets the user and explains what the script will do before making any changes
+- **User authentication** – Displays the current user and requests explicit confirmation to proceed
+- **Network interface detection** – Automatically identifies the active network interface (ensure only one cable is plugged in)
+- **Current settings display** – Shows existing IP address, netmask, gateway, and DHCP4/DHCP6 status
+- **Guided input prompts** – Prompts for new static IP, netmask, gateway, DNS servers, and hostname
+- **Netplan config management** – Locates the existing Netplan file, creates a timestamped backup, and writes a new configuration
+- **Safe apply with rollback** – Asks for confirmation before applying; if declined, automatically reverts to the original configuration
+
+---
+
+## Quick Start
 
 ### Requirements
+
 - Ubuntu Server 24.04
 - Bash
+- Root / sudo access
 
-### Installation
-Clone the repository:
-```bash
-git clone https://github.com/projects-by-ac/dynamic-to-static-ip.git
-```
+### Clone & run
 
-Navigate to the script directory:
 ```bash
+git clone https://github.com/masterlog80/dynamic-to-static-ip.git
 cd dynamic-to-static-ip
-```
-
-Make the script executable:
-```bash
 sudo chmod +x static-ip.sh
-```
-
-Run the script:
-```bash
 sudo ./static-ip.sh
 ```
 
-### This script has been thoroughly tested on Ubuntu Server 24.04
+### Uninstall / rollback
+
+The script creates a backup of your original Netplan configuration before making any changes. To restore it manually:
+
+```bash
+# The backup is saved alongside the original, e.g.:
+sudo cp /etc/netplan/00-installer-config.yaml.bak /etc/netplan/00-installer-config.yaml
+sudo netplan apply
+```
+
+---
+
+## Usage
+
+1. **Run the script** as root on your Ubuntu Server 24.04 machine.
+2. **Confirm** the active network interface detected by the script.
+3. **Enter** your desired static IP, subnet mask, gateway, DNS server(s), and hostname when prompted.
+4. **Review** the summary and confirm to apply, or decline to revert all changes automatically.
+
+---
+
+## Screenshots
+
+<img width="587" alt="Dynamic to Static IP script terminal output" src="https://github.com/user-attachments/assets/3f495c6f-d10e-42d1-97f5-ca62f4685bd2">
+
+---
+
+## License
+
+[MIT](LICENSE)
